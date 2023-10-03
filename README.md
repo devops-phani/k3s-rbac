@@ -50,3 +50,57 @@ alias kpdf='kubectl -n $n delete pod --force --grace-period=0'
 ```
 source ~/.bashrc
 ```
+
+Create role
+
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: editor
+  namespace: default
+rules:
+- apiGroups:
+  - ""
+  - extensions
+  - apps
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  - cronjobs
+  verbs:
+  - '*'
+- apiGroups:
+  - autoscaling
+  resources:
+  - horizontalpodautoscalers
+  verbs:
+  - create
+  - delete
+  - patch
+  - update
+  - get
+  - watch
+  - list
+```
+Create rolebinding
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: editor-rolebinding
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: editor
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: phani
+```
